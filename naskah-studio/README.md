@@ -5,7 +5,7 @@ Fondasi aplikasi pengelolaan jasa edit dokumen berbasis Google Apps Script, Goog
 ## Isi
 
 - `Code.gs` — pembuatan sheet, alur data, role, Drive, tugas, dan transaksi.
-- `Index.html` — dashboard dan antarmuka pengguna.
+- `Index.html` — dashboard, formulir pesanan, detail pekerjaan, pencatatan pembayaran, dan pengelolaan file.
 - `appsscript.json` — manifest runtime V8 dan konfigurasi web app.
 
 ## Cara memasang
@@ -25,7 +25,7 @@ Fondasi aplikasi pengelolaan jasa edit dokumen berbasis Google Apps Script, Goog
 - Unggah dari antarmuka dibatasi 8 MB per file.
 - Pembatasan role yang aman memerlukan deployment yang bisa memperoleh email pengguna. Pada akun Gmail pribadi atau deployment lintas domain, `Session.getActiveUser()` dapat kosong. Mode **Execute as: User accessing** dapat memberi setiap pengguna akses langsung ke spreadsheet dan berkas Drive; evaluasi konsekuensi itu sebelum dipakai bersama.
 - Pengaturan visibilitas web app perlu ditetapkan sesuai kebijakan akun Google. Untuk data klien, jangan pilih akses publik.
-- Belum ada pengiriman otomatis ke klien, tanda terima pembayaran, ekspor laporan, atau editor layanan/pesanan yang sudah tersimpan.
+- Belum ada pengiriman otomatis ke klien, tanda terima pembayaran, ekspor laporan, atau editor untuk mengubah layanan/pesanan setelah tersimpan.
 - Struktur layanan masih placeholder sampai Excel layanan diberikan.
 
 ## Catatan versi awal
