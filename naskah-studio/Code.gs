@@ -1,6 +1,6 @@
 /**
  * Naskah Studio — Apps Script web app backend
- * Bind this project to a Google Sheet, run setup(), then deploy as a web app.
+ * Run setup() first; it prepares the database spreadsheet and Drive folder.
  */
 const CFG = {
   sheets: {
