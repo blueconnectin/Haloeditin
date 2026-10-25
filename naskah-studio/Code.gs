@@ -70,9 +70,11 @@ function getBootstrap() {
   };
   if (user.Role === 'Editor') {
     data.orders = data.orders.filter(o => o.task && o.task.EditorEmail === user.Email);
+    data.orders.forEach(o => { o.payments = []; });
     data.tasks = data.tasks.filter(t => t.EditorEmail === user.Email);
-    const visibleOrders = new Set(data.orders.map(o => o.OrderID));
-    data.payments = data.payments.filter(p => visibleOrders.has(p.OrderID));
+    data.payments = [];
+    const visibleClients = new Set(data.orders.map(o => o.ClientID));
+    data.clients = data.clients.filter(c => visibleClients.has(c.ClientID));
   }
   return data;
 }
