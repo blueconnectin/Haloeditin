@@ -119,6 +119,13 @@ function updateTask(taskId, status, note) {
   setCell_('Tasks', 'TaskID', taskId, 'Status', status);
   setCell_('Tasks', 'TaskID', taskId, 'Catatan', note || '');
   setCell_('Tasks', 'TaskID', taskId, 'Diperbarui', new Date());
+  const orderStatus = {
+    'Dikerjakan': 'Dikerjakan',
+    'Menunggu Pemeriksaan': 'Pemeriksaan',
+    'Revisi': 'Revisi',
+    'Selesai': 'Selesai'
+  }[status];
+  if (orderStatus) setCell_('Orders', 'OrderID', task.OrderID, 'Status', orderStatus);
   log_('Progres tugas diperbarui', task.OrderID, status);
   return true;
 }
