@@ -10,14 +10,11 @@ Fondasi aplikasi pengelolaan jasa edit dokumen berbasis Google Apps Script, Goog
 
 ## Cara memasang
 
-1. Buat Google Sheet baru untuk database.
-2. Buka **Extensions → Apps Script**.
-3. Buat file `Code.gs`, salin isi `Code.gs` dari paket ini. Tambahkan file HTML bernama `Index`, lalu salin `Index.html`.
-4. Pada **Project Settings**, aktifkan tampilan `appsscript.json` dan salin manifest jika dibutuhkan. Atur zona waktu ke `Asia/Jakarta`.
-5. Pilih fungsi `setup` lalu jalankan. Setujui akses Sheets dan Drive. Akun yang menjalankan setup pertama akan menjadi Owner.
-6. Untuk pemakaian tim, deployment yang disarankan adalah **Execute as: Me** dengan akses dibatasi ke organisasi Google Workspace yang sama. Ini menjaga database dan Drive tetap berada di bawah akses owner, sementara aplikasi memeriksa email akun anggota tim. Jangan pilih akses publik.
-7. Owner buka menu **Pengguna** untuk menambahkan email Google tim. Editor hanya akan melihat pesanan yang ditugaskan kepadanya.
-8. Tambahkan katalog awal di menu **Layanan**. Daftar Excel layanan dapat dimasukkan setelah file diterima.
+1. Buka proyek Apps Script baru, buat file `Code.gs` dan HTML bernama `Index`, lalu salin file dari paket ini.
+2. Jalankan `setup()`. Fungsi ini membuat Google Sheet database dan folder induk Drive; akun pertama menjadi Owner.
+3. Untuk pemakaian tim, pilih skema deployment dan akses setelah metode identitas akun dipastikan. Jangan pilih akses publik.
+4. Tambahkan email tim dari menu **Pengguna** setelah deployment yang aman tersedia. Editor hanya akan melihat tugas yang ditugaskan kepadanya.
+5. Tambahkan atau impor katalog layanan setelah file Excel diterima.
 
 ## Sheet yang dibuat
 
@@ -26,7 +23,7 @@ Fondasi aplikasi pengelolaan jasa edit dokumen berbasis Google Apps Script, Goog
 ## Batasan versi awal
 
 - Unggah dari antarmuka dibatasi 8 MB per file.
-- Pembatasan role yang aman memerlukan Google Workspace dengan anggota tim di domain yang sama dan deployment yang bisa memperoleh email pengguna. Pada akun Gmail pribadi atau deployment lintas domain, `Session.getActiveUser()` dapat kosong. Jangan gunakan aplikasi ini untuk data klien sebelum mekanisme identitas sesuai konfigurasi akun diverifikasi.
+- Pembatasan role yang aman memerlukan deployment yang bisa memperoleh email pengguna. Pada akun Gmail pribadi atau deployment lintas domain, `Session.getActiveUser()` dapat kosong. Mode **Execute as: User accessing** dapat memberi setiap pengguna akses langsung ke spreadsheet dan berkas Drive; evaluasi konsekuensi itu sebelum dipakai bersama.
 - Pengaturan visibilitas web app perlu ditetapkan sesuai kebijakan akun Google. Untuk data klien, jangan pilih akses publik.
 - Belum ada pengiriman otomatis ke klien, tanda terima pembayaran, ekspor laporan, atau editor layanan/pesanan yang sudah tersimpan.
 - Struktur layanan masih placeholder sampai Excel layanan diberikan.
