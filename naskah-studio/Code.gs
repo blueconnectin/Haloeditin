@@ -27,6 +27,8 @@ function doGet() {
 function setup() {
   const settings = PropertiesService.getScriptProperties();
   let ss = SpreadsheetApp.getActive();
+  const existingDbId = settings.getProperty('DB_SPREADSHEET_ID');
+  if (!ss && existingDbId) ss = SpreadsheetApp.openById(existingDbId);
   if (!ss) ss = SpreadsheetApp.create('Naskah Studio — Database');
   settings.setProperty('DB_SPREADSHEET_ID', ss.getId());
   Object.keys(CFG.sheets).forEach(name => {
