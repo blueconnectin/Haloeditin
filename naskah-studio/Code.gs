@@ -1,5 +1,5 @@
 /**
- * Naskah Studio — Apps Script web app backend
+ * haloeditin — Apps Script web app backend
  * Run setup() first; it prepares the database spreadsheet and Drive folder.
  */
 const CFG = {
@@ -20,7 +20,7 @@ const CFG = {
 
 function doGet() {
   return HtmlService.createTemplateFromFile('Index').evaluate()
-    .setTitle('Naskah Studio — Manajemen Jasa Dokumen')
+    .setTitle('haloeditin — Manajemen Jasa Dokumen')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
@@ -29,7 +29,7 @@ function setup() {
   let ss = SpreadsheetApp.getActive();
   const existingDbId = settings.getProperty('DB_SPREADSHEET_ID');
   if (!ss && existingDbId) ss = SpreadsheetApp.openById(existingDbId);
-  if (!ss) ss = SpreadsheetApp.create('Naskah Studio — Database');
+  if (!ss) ss = SpreadsheetApp.create('haloeditin — Database');
   settings.setProperty('DB_SPREADSHEET_ID', ss.getId());
   Object.keys(CFG.sheets).forEach(name => {
     let sh = ss.getSheetByName(name);
@@ -41,7 +41,7 @@ function setup() {
     }
   });
   if (!settings.getProperty('ROOT_FOLDER_ID')) {
-    const folder = DriveApp.createFolder('Naskah Studio — File Pesanan');
+    const folder = DriveApp.createFolder('haloeditin — File Pesanan');
     settings.setProperty('ROOT_FOLDER_ID', folder.getId());
   }
   const email = Session.getActiveUser().getEmail();
