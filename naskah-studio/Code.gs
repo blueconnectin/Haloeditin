@@ -64,12 +64,15 @@ function getBootstrap() {
     }),
     clients: rows_('Clients'),
     tasks: rows_('Tasks'),
+    payments: rows_('Payments'),
     users: user.Role === 'Editor' ? [] : rows_('Users').filter(u => String(u.Aktif).toLowerCase() !== 'tidak'),
     statuses: { orders: CFG.orderStatuses, payments: CFG.paymentStatuses, tasks: CFG.taskStatuses }
   };
   if (user.Role === 'Editor') {
     data.orders = data.orders.filter(o => o.task && o.task.EditorEmail === user.Email);
     data.tasks = data.tasks.filter(t => t.EditorEmail === user.Email);
+    const visibleOrders = new Set(data.orders.map(o => o.OrderID));
+    data.payments = data.payments.filter(p => visibleOrders.has(p.OrderID));
   }
   return data;
 }
@@ -82,7 +85,7 @@ function saveOrder(input) {
     const root = DriveApp.getFolderById(PropertiesService.getScriptProperties().getProperty('ROOT_FOLDER_ID'));
     const folder = root.createFolder(id + ' — ' + input.NamaKlien);
     ['01-File-Awal', '02-File-Kerja', '03-Hasil-Revisi', '04-Hasil-Final'].forEach(n => folder.createFolder(n));
-    let client = findBy_('Clients', 'Email', input.Email || '');
+    let client = input.Email ? findBy_('Clients', 'Email', input.Email) : null;
     if (!client) {
       const cid = 'CLI-' + Utilities.getUuid().slice(0, 7).toUpperCase();
       append_('Clients', [cid, input.NamaKlien, input.Kontak || '', input.Email || '', '', new Date()]);
@@ -120,9 +123,12 @@ function updateTask(taskId, status, note) {
 
 function addPayment(input) {
   requireRole_(['Owner', 'Admin']);
-  append_('Payments', ['PAY-' + Utilities.getUuid().slice(0, 8).toUpperCase(), input.OrderID, input.Tanggal || new Date(), Number(input.Nominal), input.Metode || 'Transfer', input.Status || 'DP', input.Catatan || '']);
-  const paid = rows_('Payments').filter(p => p.OrderID === input.OrderID && p.Status !== 'Refund').reduce((s, p) => s + Number(p.Nominal || 0), 0);
   const order = findBy_('Orders', 'OrderID', input.OrderID);
+  if (!order) throw new Error('Pesanan tidak ditemukan');
+  const amount = Number(input.Nominal);
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error('Nominal pembayaran harus lebih dari nol');
+  append_('Payments', ['PAY-' + Utilities.getUuid().slice(0, 8).toUpperCase(), input.OrderID, input.Tanggal || new Date(), amount, input.Metode || 'Transfer', input.Status || 'DP', input.Catatan || '']);
+  const paid = rows_('Payments').filter(p => p.OrderID === input.OrderID && p.Status !== 'Refund').reduce((s, p) => s + Number(p.Nominal || 0), 0);
   setCell_('Orders', 'OrderID', input.OrderID, 'Status', paid >= Number(order.Total) ? 'Siap Dikerjakan' : 'Menunggu Pembayaran');
   log_('Pembayaran dicatat', input.OrderID, input.Nominal + ' — ' + input.Status);
   return true;
@@ -153,6 +159,9 @@ function uploadFile(orderId, name, mimeType, data) {
   const user = currentUser_();
   const order = findBy_('Orders', 'OrderID', orderId);
   if (!order) throw new Error('Pesanan tidak ditemukan');
+  if (!name || !data) throw new Error('File tidak lengkap');
+  const bytes = Utilities.base64Decode(data);
+  if (bytes.length > 8 * 1024 * 1024) throw new Error('Ukuran file maksimal 8 MB');
   if (user.Role === 'Editor') {
     const task = rows_('Tasks').find(t => t.OrderID === orderId && t.EditorEmail === user.Email);
     if (!task) throw new Error('Akses file ditolak');
@@ -161,7 +170,6 @@ function uploadFile(orderId, name, mimeType, data) {
   const folderName = user.Role === 'Editor' ? '02-File-Kerja' : '01-File-Awal';
   const it = parent.getFoldersByName(folderName);
   const folder = it.hasNext() ? it.next() : parent;
-  const bytes = Utilities.base64Decode(data);
   const file = folder.createFile(Utilities.newBlob(bytes, mimeType, name));
   log_('File diunggah', orderId, name);
   return { name: file.getName(), url: file.getUrl() };
