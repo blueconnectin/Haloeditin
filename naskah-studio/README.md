@@ -1,4 +1,4 @@
-# Naskah Studio — Starter Apps Script
+# haloeditin — Starter Apps Script
 
 Fondasi aplikasi pengelolaan jasa edit dokumen berbasis Google Apps Script, Google Sheets, dan Google Drive. Tampilan web responsif memakai palet warna dari color guide.
 
